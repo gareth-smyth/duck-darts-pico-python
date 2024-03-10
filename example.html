@@ -1,0 +1,56 @@
+<html lang="en">
+<head>
+    <title>Duck Darts Pico Python Example Client</title>
+</head>
+<body>
+<h1>Duck Darts Pico Python Example Client</h1>
+<div>
+    <label for="ip-address">PI Pico IP Address: </label>
+    <input type="text" id="ip-address" value="192.168.1.14"/>
+    <button onclick="connect()">Connect</button>
+</div>
+<div id="message" class="hidden"></div>
+<div id="darts-thrown"></div>
+<script>
+  let webSocket;
+
+  window.onbeforeunload = function() {
+    webSocket && webSocket.close();
+  }
+
+  function connect()
+  {
+    webSocket && webSocket.close();
+
+    const ipAddress = document.getElementById('ip-address').value;
+    webSocket = new WebSocket(`ws://${ipAddress}:5000/ws`);
+    webSocket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.number) {
+          document.getElementById('darts-thrown').innerHTML += `Dart: ${data.number}, Modifier:${data.modifier}<br/>`
+        } else if (data.button != null) {
+          console.log(1, data)
+          document.getElementById('darts-thrown').innerHTML += `Button ${data.button} pressed<br/>`
+        }
+      } catch (e) {
+        console.error(`Error ${e}`);
+        console.error(`Failed to parse message from server ${event.data}`);
+      }
+    };
+    webSocket.onopen = () => {
+      console.log('We are connected');
+      document.getElementById('message').innerHTML += 'The client is connected - try throwing a dart!<br/>';
+    };
+    webSocket.onerror = (err) => {
+      console.error('We are errored', err);
+      document.getElementById('message').innerHTML += `There was an error - see the logs for details.<br/>`;
+    };
+    webSocket.onclose = () => {
+      console.log('We are closed');
+      document.getElementById('message').innerHTML += `Connection was closed.<br/>`;
+    };
+  }
+</script>
+</body>
+</html>

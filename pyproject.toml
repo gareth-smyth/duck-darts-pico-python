@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "duck-darts-pico-python"
+version = "0.1.0"
+description = "Reads and broadcasts dart events on specific models of soft tip dartboard connected to a Raspberry Pi Pico W."
+authors = ["Gareth Smyth <gareth-smyth@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+rshell = "^0.0.32"
+docopt = "^0.6.2"
+adafruit-ampy = "1.0.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
